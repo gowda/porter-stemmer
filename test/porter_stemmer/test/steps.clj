@@ -7,6 +7,11 @@
   (is (every? #(= 1 (cvc-count %)) ["trouble" "oats" "trees" "ivy"]))
   (is (every? #(= 2 (cvc-count %)) ["private" "private" "oaten" "orrery"])))
 
+(deftest test-n-cvc-count
+  (is (every? #(= 0 (n-cvc-count %)) ["tr" "ee" "tree" "y" "by"]))
+  (is (every? #(= 1 (n-cvc-count %)) ["trouble" "oats" "trees" "ivy"]))
+  (is (every? #(= 2 (n-cvc-count %)) ["private" "private" "oaten" "orrery"])))
+
 (deftest test-step-1a
   (is (every? (fn [[word stem]]
                 (= (step-1a word) stem))

@@ -20,6 +20,14 @@
     (apply str (subvec (into [] s) 0 (- (count s) (count end))))
     s))
 
+(defn n-vowel? [char-vec]
+  (or (#{\a \e \i \o \u} (second char-vec))
+      (and (not (or (#{\a \e \i \o \u} (first char-vec))
+                    (nil? (first char-vec))))
+           (= (second char-vec) \y))))
+
+(def n-consonant? (complement n-vowel?))
+
 (def vowel? #{\a \e \i \o \u})
 (def consonant? (complement vowel?))
 
@@ -36,17 +44,46 @@
                    cvc-map)]
     (count (partition 2 vcvc-map))))
 
+(defn str->charvec [s]
+  (map (fn [x y] [x y]) (into [nil] s) s))
+
+(defn n-cvc-count
+  "Count VC patterns after shrinking the string to the form [C](VC){m}[V]."
+  [s]
+  (let [cvc-map (reduce #(if (= (last %1) %2)
+                           %1
+                           (conj %1 %2))
+                        []
+                        (keep n-consonant? (str->charvec s)))
+        vcvc-map (if (= (first cvc-map) true)
+                   (rest cvc-map)
+                   cvc-map)]
+    (count (partition 2 vcvc-map))))
+
 (defn sandwiched-v?
   "True if a minimum of one vowel is present inside of string, borders
    excluded."
   [s]
   (some vowel? (butlast (rest s))))
 
+(defn n-sandwiched-v?
+  "True if a minimum of one vowel is present inside of string, borders
+   excluded."
+  [s]
+  (some n-vowel? (str->charvec s)))
+
 (defn double-c?
   "True if string ends with same letter and the letter is consonant."
   [s]
   (and (consonant? (last s))
        (= (last s) (last (butlast s)))))
+
+(defn n-double-c?
+  "True if string ends with same letter and the letter is consonant."
+  [s]
+  (let [cvec (str->charvec s)]
+    (and (n-consonant? (last cvec))
+         (= (last s) (last (butlast s))))))
 
 (defn ends-cvc?
   "True if string ends with <consonant><vowel><consonant>."
@@ -57,6 +94,16 @@
             (consonant? (last s))
             (not (#{\w \x \y} (last s))))))
 
+(defn n-ends-cvc?
+  "True if string ends with <consonant><vowel><consonant>."
+  [s]
+  (let [cvec (str->charvec s)]
+    (and (>= (count s) 3)
+         (and (n-consonant? (last (butlast (butlast cvec))))
+              (n-vowel? (last (butlast cvec)))
+              (n-consonant? (last cvec))
+              (not (#{\w \x \y} (second (last cvec))))))))
+
 ;;;
 ;;; algorithm steps
 ;;;
@@ -66,10 +113,10 @@
               (ends? s "at") (concat (stem s "at") "ate")
               (ends? s "bl") (concat (stem s "bl") "ble")
               (ends? s "iz") (concat (stem s "iz") "ize")
-              (double-c? s) (if (not (#{\l \s \z} (last s)))
-                              (butlast s)
-                              s)
-              (and (= (cvc-count s) 1) (ends-cvc? s)) (concat s "e")
+              (n-double-c? s) (if (not (#{\l \s \z} (last s)))
+                                (butlast s)
+                                s)
+              (and (= (n-cvc-count s) 1) (n-ends-cvc? s)) (concat s "e")
               :else s)))
 
 (defn step-1a [s]
@@ -81,20 +128,20 @@
 
 (defn step-1b [s]
   (apply str (cond
-              (ends? s "eed") (if (> (cvc-count (stem s "eed")) 0)
+              (ends? s "eed") (if (> (n-cvc-count (stem s "eed")) 0)
                                 (concat (stem s "eed") "ee")
                                 s)
-              (ends? s "ed") (if (sandwiched-v? (stem s "ed"))
+              (ends? s "ed") (if (n-sandwiched-v? (stem s "ed"))
                                (post-1b (concat (stem s "ed") ""))
                                s)
-              (ends? s "ing") (if (sandwiched-v? (stem s "ing"))
+              (ends? s "ing") (if (n-sandwiched-v? (stem s "ing"))
                                 (post-1b (concat (stem s "ing") ""))
                                 s)
               :else s)))
 
 (defn step-1c [s]
   (apply str (if (and (ends? s "y")
-                      (sandwiched-v? (stem s "y")))
+                      (n-sandwiched-v? (stem s "y")))
                (concat (stem s "y") "i")
                s)))
 
@@ -110,7 +157,7 @@
     (apply str
            (or (some (fn [[end alt]]
                        (if (and (ends? s end)
-                                (> (cvc-count (stem s end)) 0))
+                                (> (n-cvc-count (stem s end)) 0))
                          (concat (stem s end) alt)))
                      trans-map)
                s))))
@@ -120,9 +167,10 @@
                    ["iciti" "ic"] ["ical" "ic"] ["ful" ""] ["ness" ""]]]
     (apply str
            (or (some (fn [[end alt]]
-                       (if (and (ends? s end)
-                                (> (cvc-count (stem s end)) 0))
-                         (concat (stem s end) alt)))
+                       (if (ends? s end)
+                         (if (> (n-cvc-count (stem s end)) 0)
+                           (concat (stem s end) alt)
+                           s)))
                      trans-map)
                s))))
 
@@ -133,31 +181,32 @@
                    ["iti" ""] ["ous" ""] ["ive" ""] ["ize" ""]]]
     (apply str
            (or (some (fn [[end alt]]
-                       (if (and (ends? s end)
-                                (> (cvc-count (stem s end)) 1))
-                         (if (= end "ion")
-                           (or (and (or (ends? (stem s "ion") "s")
-                                        (ends? (stem s "ion") "t"))
-                                    (concat (stem s end) alt))
-                               s)
-                           (concat (stem s end) alt))))
+                       (if (ends? s end)
+                         (if (> (n-cvc-count (stem s end)) 1)
+                           (if (= end "ion")
+                             (or (and (or (ends? (stem s "ion") "s")
+                                          (ends? (stem s "ion") "t"))
+                                      (concat (stem s end) alt))
+                                 s)
+                             (concat (stem s end) alt))
+                           s)))
                      trans-map)
                s))))
 
 (defn step-5a [s]
   (apply str
          (if (ends? s "e")
-           (if (> (cvc-count (stem s "e")) 1)
+           (if (> (n-cvc-count (stem s "e")) 1)
              (concat (stem s "e") "")
-             (if (and (= (cvc-count (stem s "e")) 1)
-                      (not (ends-cvc? (stem s "e"))))
+             (if (and (= (n-cvc-count (stem s "e")) 1)
+                      (not (n-ends-cvc? (stem s "e"))))
                (concat (stem s "e") "")
                s))
            s)))
 
 (defn step-5b [s]
-  (apply str (if (and (> (cvc-count s) 1)
-                      (double-c? s)
+  (apply str (if (and (> (n-cvc-count s) 1)
+                      (n-double-c? s)
                       (ends? s "l"))
                (butlast s)
                s)))
