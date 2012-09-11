@@ -5,6 +5,7 @@ Implementation of stemmer as per M.F.Porter's [algorithm](http://tartarus.org/~m
 # Usage
 
 On a REPL, use `stem-it` procedure to obtain the stem of a string.
+    
     (stem-it "generalization")
 
 NOTE: ensure that string is in lower-case before passing to `stem-it`.
