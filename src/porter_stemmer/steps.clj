@@ -101,12 +101,12 @@
 
 (defn step-2 [s]
   (let [trans-map [["ational" "ate"] ["tional" "tion"] ["enci" "ence"]
-                   ["anci" "ance"] ["izer" "ize"] ["abli" "able"] ["alli" "al"]
+                   ["anci" "ance"] ["izer" "ize"] ["bli" "ble"] ["alli" "al"]
                    ["entli" "ent"] ["eli" "e"] ["ousli" "ous"]
                    ["ization" "ize"] ["ation" "ate"] ["ator" "ate"]
                    ["alism" "al"] ["iveness" "ive"] ["fulness" "ful"]
                    ["ousness" "ous"] ["aliti" "al"] ["iviti" "ive"]
-                   ["biliti" "ble"]]]
+                   ["biliti" "ble"] ["logi" "log"]]]
     (apply str
            (or (some (fn [[end alt]]
                        (if (and (ends? s end)
