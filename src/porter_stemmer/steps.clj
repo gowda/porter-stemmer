@@ -36,7 +36,7 @@
                    cvc-map)]
     (count (partition 2 vcvc-map))))
 
-(defn sandwitched-v?
+(defn sandwiched-v?
   "True if a minimum of one vowel is present inside of string, borders
    excluded."
   [s]
@@ -84,17 +84,17 @@
               (ends? s "eed") (if (> (cvc-count (stem s "eed")) 0)
                                 (concat (stem s "eed") "ee")
                                 s)
-              (ends? s "ed") (if (sandwitched-v? (stem s "ed"))
+              (ends? s "ed") (if (sandwiched-v? (stem s "ed"))
                                (post-1b (concat (stem s "ed") ""))
                                s)
-              (ends? s "ing") (if (sandwitched-v? (stem s "ing"))
+              (ends? s "ing") (if (sandwiched-v? (stem s "ing"))
                                 (post-1b (concat (stem s "ing") ""))
                                 s)
               :else s)))
 
 (defn step-1c [s]
   (apply str (if (and (ends? s "y")
-                      (sandwitched-v? (stem s "y")))
+                      (sandwiched-v? (stem s "y")))
                (concat (stem s "y") "i")
                s)))
 
