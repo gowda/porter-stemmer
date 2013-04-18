@@ -55,6 +55,7 @@
   (is (false? (cvc-end? "ceas"))))
 
 (deftest test-ends?
+  (is (false? (ends? "al" "ational")))
   (is (ends? "caresses" "sses"))
   (is (ends? "ponies" "ies"))
   (is (ends? "ties" "ies"))

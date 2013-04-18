@@ -7,7 +7,8 @@
 (defn ends?
   "True if string @s ends with string @end."
   [s end]
-  (every? true? (map = (reverse s) (reverse end))))
+  (and (> (count s) (count end))
+       (every? true? (map = (reverse s) (reverse end)))))
 
 (defn stem
   "Return string @s without the end @end, only if @s actually ends with @end."
