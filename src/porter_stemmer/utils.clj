@@ -27,37 +27,41 @@
 
 (def vowel? (complement consonant?))
 
-(defn cvc-count
-  "Count VC patterns after shrinking the string to the form [C](VC){m}[V]."
-  [s]
-  (let [cvc-map (reduce #(if (= (last %1) %2)
-                           %1
-                           (conj %1 %2))
-                        []
-                        (keep consonant? s))
-        vcvc-map (if (= (first cvc-map) true)
-                   (rest cvc-map)
-                   cvc-map)]
-    (count (partition 2 vcvc-map))))
-
 (defn string->charvec [s]
   (->> s
        (map identity)
        (concat [nil])
        (partition 2 1)))
 
-(defn n-cvc-count
-  "Count VC patterns after shrinking the string to the form [C](VC){m}[V]."
+(defn cvc-map [s]
+  (->> s
+       string->charvec
+       (map consonant?)
+       (reduce (fn [result v]
+                 (if (= (last result) v)
+                   result
+                   (conj result v)))
+               [])))
+
+(defn without-first-true [coll]
+  (if (true? (first coll))
+    (rest coll)
+    coll))
+
+(defn without-last-false [coll]
+  (if (false? (last coll))
+    (butlast coll)
+    coll))
+
+(defn cvc-count
+  "Count VC patterns after shrinking the string @s to the form [C](VC){m}[V]"
   [s]
-  (let [cvc-map (reduce #(if (= (last %1) %2)
-                           %1
-                           (conj %1 %2))
-                        []
-                        (keep consonant? (string->charvec s)))
-        vcvc-map (if (= (first cvc-map) true)
-                   (rest cvc-map)
-                   cvc-map)]
-    (count (partition 2 vcvc-map))))
+  (->> s
+       cvc-map
+       without-first-true
+       without-last-false
+       (partition 2)
+       count))
 
 (defn sandwiched-v?
   "True if a minimum of one vowel is present inside of string, borders

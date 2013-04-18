@@ -13,7 +13,7 @@
               (n-double-c? s) (if (not (#{\l \s \z} (last s)))
                                 (butlast s)
                                 s)
-              (and (= (n-cvc-count s) 1) (n-ends-cvc? s)) (concat s "e")
+              (and (= (cvc-count s) 1) (n-ends-cvc? s)) (concat s "e")
               :else s)))
 
 (defn step-1a [s]
@@ -25,7 +25,7 @@
 
 (defn step-1b [s]
   (apply str (cond
-              (ends? s "eed") (if (> (n-cvc-count (stem s "eed")) 0)
+              (ends? s "eed") (if (> (cvc-count (stem s "eed")) 0)
                                 (concat (stem s "eed") "ee")
                                 s)
               (ends? s "ed") (if (n-sandwiched-v? (stem s "ed"))
@@ -54,7 +54,7 @@
     (apply str
            (or (some (fn [[end alt]]
                        (if (and (ends? s end)
-                                (> (n-cvc-count (stem s end)) 0))
+                                (> (cvc-count (stem s end)) 0))
                          (concat (stem s end) alt)))
                      trans-map)
                s))))
@@ -65,7 +65,7 @@
     (apply str
            (or (some (fn [[end alt]]
                        (if (ends? s end)
-                         (if (> (n-cvc-count (stem s end)) 0)
+                         (if (> (cvc-count (stem s end)) 0)
                            (concat (stem s end) alt)
                            s)))
                      trans-map)
@@ -79,7 +79,7 @@
     (apply str
            (or (some (fn [[end alt]]
                        (if (ends? s end)
-                         (if (> (n-cvc-count (stem s end)) 1)
+                         (if (> (cvc-count (stem s end)) 1)
                            (if (= end "ion")
                              (or (and (or (ends? (stem s "ion") "s")
                                           (ends? (stem s "ion") "t"))
@@ -93,16 +93,16 @@
 (defn step-5a [s]
   (apply str
          (if (ends? s "e")
-           (if (> (n-cvc-count (stem s "e")) 1)
+           (if (> (cvc-count (stem s "e")) 1)
              (concat (stem s "e") "")
-             (if (and (= (n-cvc-count (stem s "e")) 1)
+             (if (and (= (cvc-count (stem s "e")) 1)
                       (not (n-ends-cvc? (stem s "e"))))
                (concat (stem s "e") "")
                s))
            s)))
 
 (defn step-5b [s]
-  (apply str (if (and (> (n-cvc-count s) 1)
+  (apply str (if (and (> (cvc-count s) 1)
                       (n-double-c? s)
                       (ends? s "l"))
                (butlast s)
