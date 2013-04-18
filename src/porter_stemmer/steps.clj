@@ -72,23 +72,23 @@
              s))))
 
 (defn step-4 [s]
-  (let [trans-map [["al" ""] ["ance" ""] ["ence" ""] ["er" ""] ["ic" ""]
-                   ["able" ""] ["ible" ""] ["ant" ""] ["ement" ""] ["ment" ""]
-                   ["ent" ""] ["ion" ""] ["ou" ""] ["ism" ""] ["ate" ""]
-                   ["iti" ""] ["ous" ""] ["ive" ""] ["ize" ""]]]
+  (let [[end replacement]
+        (->> [["al" ""] ["ance" ""] ["ence" ""] ["er" ""] ["ic" ""]
+              ["able" ""] ["ible" ""] ["ant" ""] ["ement" ""] ["ment" ""]
+              ["ent" ""] ["ion" ""] ["ou" ""] ["ism" ""] ["ate" ""]
+              ["iti" ""] ["ous" ""] ["ive" ""] ["ize" ""]]
+             (filter (fn [[end _]]
+                       (ends? s end)))
+             first)]
     (apply str
-           (or (some (fn [[end alt]]
-                       (if (ends? s end)
-                         (if (> (cvc-count (stem s end)) 1)
-                           (if (= end "ion")
-                             (or (and (or (ends? (stem s "ion") "s")
-                                          (ends? (stem s "ion") "t"))
-                                      (concat (stem s end) alt))
-                                 s)
-                             (concat (stem s end) alt))
-                           s)))
-                     trans-map)
-               s))))
+           (if (> (cvc-count (stem s end)) 1)
+             (if (= end "ion")
+               (or (and (or (ends? (stem s "ion") "s")
+                            (ends? (stem s "ion") "t"))
+                        (concat (stem s end) replacement))
+                   s)
+               (concat (stem s end) replacement))
+             s))))
 
 (defn step-5a [s]
   (apply str
