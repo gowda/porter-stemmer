@@ -36,6 +36,12 @@
   (is (every? #(= 1 (cvc-count %)) ["trouble" "oats" "trees" "ivy"]))
   (is (every? #(= 2 (cvc-count %)) ["private" "private" "oaten" "orrery"])))
 
+(deftest test-sandwiched-vowel?
+  (is (true? (sandwiched-vowel? "plaster")))
+  (is (false? (sandwiched-vowel? "bl")))
+  (is (true? (sandwiched-vowel? "happ")))
+  (is (false? (sandwiched-vowel? "sk"))))
+
 (deftest test-ends?
   (is (ends? "caresses" "sses"))
   (is (ends? "ponies" "ies"))

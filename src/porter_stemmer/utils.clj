@@ -63,17 +63,11 @@
        (partition 2)
        count))
 
-(defn sandwiched-v?
+(defn sandwiched-vowel?
   "True if a minimum of one vowel is present inside of string, borders
    excluded."
   [s]
-  (some vowel? (butlast (rest s))))
-
-(defn n-sandwiched-v?
-  "True if a minimum of one vowel is present inside of string, borders
-   excluded."
-  [s]
-  (some vowel? (string->charvec s)))
+  (->> s cvc-map rest butlast (some false?) boolean))
 
 (defn double-c?
   "True if string ends with same letter and the letter is consonant."
