@@ -16,16 +16,16 @@
     (apply str (subvec (into [] s) 0 (- (count s) (count end))))
     s))
 
-(defn n-vowel? [char-vec]
-  (or (#{\a \e \i \o \u} (second char-vec))
-      (and (not (or (#{\a \e \i \o \u} (first char-vec))
-                    (nil? (first char-vec))))
-           (= (second char-vec) \y))))
+(def proper-vowel? #{\a \e \i \o \u})
+(def not-a-proper-vowel? (complement proper-vowel?))
 
-(def n-consonant? (complement n-vowel?))
+(defn consonant? [[preceding-c c]]
+  (-> (if (= c \y)
+        (proper-vowel? preceding-c)
+        (not-a-proper-vowel? c))
+      boolean))
 
-(def vowel? #{\a \e \i \o \u})
-(def consonant? (complement vowel?))
+(def vowel? (complement consonant?))
 
 (defn cvc-count
   "Count VC patterns after shrinking the string to the form [C](VC){m}[V]."
@@ -40,8 +40,11 @@
                    cvc-map)]
     (count (partition 2 vcvc-map))))
 
-(defn str->charvec [s]
-  (map (fn [x y] [x y]) (into [nil] s) s))
+(defn string->charvec [s]
+  (->> s
+       (map identity)
+       (concat [nil])
+       (partition 2 1)))
 
 (defn n-cvc-count
   "Count VC patterns after shrinking the string to the form [C](VC){m}[V]."
@@ -50,7 +53,7 @@
                            %1
                            (conj %1 %2))
                         []
-                        (keep n-consonant? (str->charvec s)))
+                        (keep consonant? (string->charvec s)))
         vcvc-map (if (= (first cvc-map) true)
                    (rest cvc-map)
                    cvc-map)]
@@ -66,7 +69,7 @@
   "True if a minimum of one vowel is present inside of string, borders
    excluded."
   [s]
-  (some n-vowel? (str->charvec s)))
+  (some vowel? (string->charvec s)))
 
 (defn double-c?
   "True if string ends with same letter and the letter is consonant."
@@ -77,8 +80,8 @@
 (defn n-double-c?
   "True if string ends with same letter and the letter is consonant."
   [s]
-  (let [cvec (str->charvec s)]
-    (and (n-consonant? (last cvec))
+  (let [cvec (string->charvec s)]
+    (and (consonant? (last cvec))
          (= (last s) (last (butlast s))))))
 
 (defn ends-cvc?
@@ -93,10 +96,10 @@
 (defn n-ends-cvc?
   "True if string ends with <consonant><vowel><consonant>."
   [s]
-  (let [cvec (str->charvec s)]
+  (let [cvec (string->charvec s)]
     (and (>= (count s) 3)
-         (and (n-consonant? (last (butlast (butlast cvec))))
-              (n-vowel? (last (butlast cvec)))
-              (n-consonant? (last cvec))
+         (and (consonant? (last (butlast (butlast cvec))))
+              (vowel? (last (butlast cvec)))
+              (consonant? (last cvec))
               (not (#{\w \x \y} (second (last cvec))))))))
 

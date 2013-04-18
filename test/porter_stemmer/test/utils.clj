@@ -1,6 +1,36 @@
 (ns porter-stemmer.test.utils
   (:use [porter-stemmer.utils] [clojure.test]))
 
+(deftest test-string->charvec
+  (let [s "string"]
+    (is (= (count s)
+           (count (string->charvec s)))))
+  (let [s ""]
+    (is (= (count s)
+           (count (string->charvec s))))))
+
+(deftest test-vowel?
+  (let [s "string"]
+    (is (= (map vowel? (string->charvec s))
+           '(false false false true false false))))
+  (let [s "sky"]
+    (is (= (map vowel? (string->charvec s))
+           '(false false true))))
+  (let [s "toy"]
+    (is (= (map vowel? (string->charvec s))
+           '(false true false)))))
+
+(deftest test-consonant?
+  (let [s "string"]
+    (is (= (map consonant? (string->charvec s))
+           '(true true true false true true))))
+  (let [s "sky"]
+    (is (= (map consonant? (string->charvec s))
+           '(true true false))))
+  (let [s "toy"]
+    (is (= (map consonant? (string->charvec s))
+           '(true false true)))))
+
 (deftest test-cvc-count
   (is (every? #(= 0 (cvc-count %)) ["tr" "ee" "tree" "y" "by"]))
   (is (every? #(= 1 (cvc-count %)) ["trouble" "oats" "trees" "ivy"]))
