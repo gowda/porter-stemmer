@@ -72,6 +72,9 @@
 (defn second-last [coll]
   (-> coll butlast last))
 
+(defn third-last [coll]
+  (-> coll butlast butlast last))
+
 (defn double-consonant-end?
   "True if string ends with same letter and the letter is consonant."
   [s]
@@ -79,22 +82,11 @@
           (second-last s))
        (consonant? (-> s string->charvec last))))
 
-(defn ends-cvc?
+(defn cvc-end?
   "True if string ends with <consonant><vowel><consonant>."
   [s]
-  (and (>= (count s) 3)
-       (and (consonant? (last (butlast (butlast s))))
-            (vowel? (last (butlast s)))
-            (consonant? (last s))
+  (and (consonant? (-> s string->charvec third-last))
+       (vowel? (-> s string->charvec second-last))
+       (and (consonant? (-> s string->charvec last))
             (not (#{\w \x \y} (last s))))))
-
-(defn n-ends-cvc?
-  "True if string ends with <consonant><vowel><consonant>."
-  [s]
-  (let [cvec (string->charvec s)]
-    (and (>= (count s) 3)
-         (and (consonant? (last (butlast (butlast cvec))))
-              (vowel? (last (butlast cvec)))
-              (consonant? (last cvec))
-              (not (#{\w \x \y} (second (last cvec))))))))
 

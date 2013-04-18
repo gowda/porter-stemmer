@@ -13,7 +13,7 @@
               (double-consonant-end? s) (if (not (#{\l \s \z} (last s)))
                                           (butlast s)
                                           s)
-              (and (= (cvc-count s) 1) (n-ends-cvc? s)) (concat s "e")
+              (and (= (cvc-count s) 1) (cvc-end? s)) (concat s "e")
               :else s)))
 
 (defn step-1a [s]
@@ -96,7 +96,7 @@
            (if (> (cvc-count (stem s "e")) 1)
              (concat (stem s "e") "")
              (if (and (= (cvc-count (stem s "e")) 1)
-                      (not (n-ends-cvc? (stem s "e"))))
+                      (not (cvc-end? (stem s "e"))))
                (concat (stem s "e") "")
                s))
            s)))

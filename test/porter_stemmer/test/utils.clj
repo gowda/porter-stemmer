@@ -49,6 +49,11 @@
   (is (true? (double-consonant-end? "hiss")))
   (is (true? (double-consonant-end? "fizz"))))
 
+(deftest test-cvc-end?
+  (is (false? (cvc-end? "fail")))
+  (is (true? (cvc-end? "fil")))
+  (is (false? (cvc-end? "ceas"))))
+
 (deftest test-ends?
   (is (ends? "caresses" "sses"))
   (is (ends? "ponies" "ies"))
