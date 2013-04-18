@@ -7,11 +7,7 @@
 (defn ends?
   "True if string @s ends with string @end."
   [s end]
-  (let [end-length (count end)
-        s-length (count s)]
-    (if (> s-length end-length)
-      (let [s-end (subvec (into [] s) (- s-length end-length))]
-        (every? true? (map = end s-end))))))
+  (every? true? (map = (reverse s) (reverse end))))
 
 (defn stem
   "Return string @s without the end @end, only if @s actually ends with @end."
