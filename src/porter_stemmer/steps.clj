@@ -10,9 +10,9 @@
               (ends? s "at") (concat (stem s "at") "ate")
               (ends? s "bl") (concat (stem s "bl") "ble")
               (ends? s "iz") (concat (stem s "iz") "ize")
-              (n-double-c? s) (if (not (#{\l \s \z} (last s)))
-                                (butlast s)
-                                s)
+              (double-consonant-end? s) (if (not (#{\l \s \z} (last s)))
+                                          (butlast s)
+                                          s)
               (and (= (cvc-count s) 1) (n-ends-cvc? s)) (concat s "e")
               :else s)))
 
@@ -103,7 +103,7 @@
 
 (defn step-5b [s]
   (apply str (if (and (> (cvc-count s) 1)
-                      (n-double-c? s)
+                      (double-consonant-end? s)
                       (ends? s "l"))
                (butlast s)
                s)))

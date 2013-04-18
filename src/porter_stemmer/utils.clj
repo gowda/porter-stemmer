@@ -69,18 +69,15 @@
   [s]
   (->> s cvc-map rest butlast (some false?) boolean))
 
-(defn double-c?
-  "True if string ends with same letter and the letter is consonant."
-  [s]
-  (and (consonant? (last s))
-       (= (last s) (last (butlast s)))))
+(defn second-last [coll]
+  (-> coll butlast last))
 
-(defn n-double-c?
+(defn double-consonant-end?
   "True if string ends with same letter and the letter is consonant."
   [s]
-  (let [cvec (string->charvec s)]
-    (and (consonant? (last cvec))
-         (= (last s) (last (butlast s))))))
+  (and (= (last s)
+          (second-last s))
+       (consonant? (-> s string->charvec last))))
 
 (defn ends-cvc?
   "True if string ends with <consonant><vowel><consonant>."

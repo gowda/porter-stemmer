@@ -42,6 +42,13 @@
   (is (true? (sandwiched-vowel? "happ")))
   (is (false? (sandwiched-vowel? "sk"))))
 
+(deftest test-double-consonant-end?
+  (is (true? (double-consonant-end? "hopp")))
+  (is (true? (double-consonant-end? "tann")))
+  (is (true? (double-consonant-end? "fall")))
+  (is (true? (double-consonant-end? "hiss")))
+  (is (true? (double-consonant-end? "fizz"))))
+
 (deftest test-ends?
   (is (ends? "caresses" "sses"))
   (is (ends? "ponies" "ies"))
