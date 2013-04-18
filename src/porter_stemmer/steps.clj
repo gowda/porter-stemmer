@@ -60,16 +60,16 @@
              s))))
 
 (defn step-3 [s]
-  (let [trans-map [["icate" "ic"] ["ative" ""] ["alize" "al"]
-                   ["iciti" "ic"] ["ical" "ic"] ["ful" ""] ["ness" ""]]]
+  (let [[end replacement]
+        (->> [["icate" "ic"] ["ative" ""] ["alize" "al"] ["iciti" "ic"]
+             ["ical" "ic"] ["ful" ""] ["ness" ""]]
+            (filter (fn [[end _]]
+                      (ends? s end)))
+            first)]
     (apply str
-           (or (some (fn [[end alt]]
-                       (if (ends? s end)
-                         (if (> (cvc-count (stem s end)) 0)
-                           (concat (stem s end) alt)
-                           s)))
-                     trans-map)
-               s))))
+           (if (> (cvc-count (stem s end)) 0)
+             (concat (stem s end) replacement)
+             s))))
 
 (defn step-4 [s]
   (let [trans-map [["al" ""] ["ance" ""] ["ence" ""] ["er" ""] ["ic" ""]
