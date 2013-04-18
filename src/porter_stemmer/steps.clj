@@ -44,20 +44,20 @@
 
 
 (defn step-2 [s]
-  (let [trans-map [["ational" "ate"] ["tional" "tion"] ["enci" "ence"]
-                   ["anci" "ance"] ["izer" "ize"] ["bli" "ble"] ["alli" "al"]
-                   ["entli" "ent"] ["eli" "e"] ["ousli" "ous"]
-                   ["ization" "ize"] ["ation" "ate"] ["ator" "ate"]
-                   ["alism" "al"] ["iveness" "ive"] ["fulness" "ful"]
-                   ["ousness" "ous"] ["aliti" "al"] ["iviti" "ive"]
-                   ["biliti" "ble"] ["logi" "log"]]]
+  (let [[end replacement]
+        (->> [["ational" "ate"] ["tional" "tion"] ["enci" "ence"]
+              ["anci" "ance"] ["izer" "ize"] ["bli" "ble"] ["alli" "al"]
+              ["entli" "ent"] ["eli" "e"] ["ousli" "ous"] ["ization" "ize"]
+              ["ation" "ate"] ["ator" "ate"] ["alism" "al"] ["iveness" "ive"]
+              ["fulness" "ful"] ["ousness" "ous"] ["aliti" "al"]
+              ["iviti" "ive"] ["biliti" "ble"] ["logi" "log"]]
+             (filter (fn [[end _]]
+                       (ends? s end)))
+             first)]
     (apply str
-           (or (some (fn [[end alt]]
-                       (if (and (ends? s end)
-                                (> (cvc-count (stem s end)) 0))
-                         (concat (stem s end) alt)))
-                     trans-map)
-               s))))
+           (if (> (cvc-count (stem s end)) 0)
+             (concat (stem s end) replacement)
+             s))))
 
 (defn step-3 [s]
   (let [trans-map [["icate" "ic"] ["ative" ""] ["alize" "al"]
