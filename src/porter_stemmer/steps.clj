@@ -28,17 +28,17 @@
               (ends? s "eed") (if (> (cvc-count (stem s "eed")) 0)
                                 (concat (stem s "eed") "ee")
                                 s)
-              (ends? s "ed") (if (sandwiched-vowel? (stem s "ed"))
+              (ends? s "ed") (if (contains-vowel? (stem s "ed"))
                                (post-1b (concat (stem s "ed") ""))
                                s)
-              (ends? s "ing") (if (sandwiched-vowel? (stem s "ing"))
+              (ends? s "ing") (if (contains-vowel? (stem s "ing"))
                                 (post-1b (concat (stem s "ing") ""))
                                 s)
               :else s)))
 
 (defn step-1c [s]
   (apply str (if (and (ends? s "y")
-                      (sandwiched-vowel? (stem s "y")))
+                      (contains-vowel? (stem s "y")))
                (concat (stem s "y") "i")
                s)))
 

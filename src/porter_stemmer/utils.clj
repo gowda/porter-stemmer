@@ -67,11 +67,10 @@
        (partition 2)
        count))
 
-(defn sandwiched-vowel?
-  "True if a minimum of one vowel is present inside of string, borders
-   excluded."
+(defn contains-vowel?
+  "True if a minimum of one vowel is present inside of string."
   [s]
-  (->> s cvc-map rest butlast (some false?) boolean))
+  (->> s cvc-map (some false?) boolean))
 
 (defn second-last [coll]
   (-> coll butlast last))

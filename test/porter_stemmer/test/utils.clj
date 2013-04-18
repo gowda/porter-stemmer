@@ -36,11 +36,11 @@
   (is (every? #(= 1 (cvc-count %)) ["trouble" "oats" "trees" "ivy"]))
   (is (every? #(= 2 (cvc-count %)) ["private" "private" "oaten" "orrery"])))
 
-(deftest test-sandwiched-vowel?
-  (is (true? (sandwiched-vowel? "plaster")))
-  (is (false? (sandwiched-vowel? "bl")))
-  (is (true? (sandwiched-vowel? "happ")))
-  (is (false? (sandwiched-vowel? "sk"))))
+(deftest test-contains-vowel?
+  (is (true? (contains-vowel? "plaster")))
+  (is (false? (contains-vowel? "bl")))
+  (is (true? (contains-vowel? "happ")))
+  (is (false? (contains-vowel? "sk"))))
 
 (deftest test-double-consonant-end?
   (is (true? (double-consonant-end? "hopp")))
