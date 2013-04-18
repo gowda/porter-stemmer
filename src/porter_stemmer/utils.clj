@@ -20,14 +20,19 @@
 (def proper-vowel? #{\a \e \i \o \u})
 (def not-a-proper-vowel? (complement proper-vowel?))
 
-(defn consonant? [[preceding-c c]]
-  (-> (if (= c \y)
-        (or (proper-vowel? preceding-c)
-            (nil? preceding-c))
-        (not-a-proper-vowel? c))
-      boolean))
+(defn consonant? [[preceding-c c :as v]]
+  (if (nil? v)
+    false
+    (-> (if (= c \y)
+          (or (proper-vowel? preceding-c)
+              (nil? preceding-c))
+          (not-a-proper-vowel? c))
+        boolean)))
 
-(def vowel? (complement consonant?))
+(defn vowel? [v]
+  (if (nil? v)
+    false
+    (not (consonant? v))))
 
 (defn string->charvec [s]
   (->> s

@@ -21,7 +21,8 @@
            '(false true false))))
   (let [s "yar"]
     (is (= (map vowel? (string->charvec s))
-           '(false true false)))))
+           '(false true false))))
+  (is (false? (vowel? nil))))
 
 (deftest test-consonant?
   (let [s "string"]
@@ -32,7 +33,8 @@
            '(true true false))))
   (let [s "toy"]
     (is (= (map consonant? (string->charvec s))
-           '(true false true)))))
+           '(true false true))))
+  (is (false? (consonant? nil))))
 
 (deftest test-cvc-count
   (is (every? #(= 0 (cvc-count %)) ["tr" "ee" "tree" "y" "by"]))
