@@ -43,15 +43,18 @@
                    (conj result v)))
                [])))
 
-(defn without-first-true [coll]
-  (if (true? (first coll))
+(defn conditional-rest [predicate? coll]
+  (if (predicate? (first coll))
     (rest coll)
     coll))
 
-(defn without-last-false [coll]
-  (if (false? (last coll))
-    (butlast coll)
+(defn conditional-butlast [predicate? coll]
+  (if (predicate? (last coll))
+    (rest coll)
     coll))
+
+(def without-first-true (partial conditional-rest true?))
+(def without-last-false (partial conditional-butlast false?))
 
 (defn cvc-count
   "Count VC patterns after shrinking the string @s to the form [C](VC){m}[V]"
