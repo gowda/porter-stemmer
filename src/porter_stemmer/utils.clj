@@ -22,7 +22,8 @@
 
 (defn consonant? [[preceding-c c]]
   (-> (if (= c \y)
-        (proper-vowel? preceding-c)
+        (or (proper-vowel? preceding-c)
+            (nil? preceding-c))
         (not-a-proper-vowel? c))
       boolean))
 

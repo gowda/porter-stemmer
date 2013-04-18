@@ -18,6 +18,9 @@
            '(false false true))))
   (let [s "toy"]
     (is (= (map vowel? (string->charvec s))
+           '(false true false))))
+  (let [s "yar"]
+    (is (= (map vowel? (string->charvec s))
            '(false true false)))))
 
 (deftest test-consonant?
