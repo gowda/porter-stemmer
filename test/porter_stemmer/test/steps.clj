@@ -1,4 +1,5 @@
 (ns porter-stemmer.test.steps
+  (:require [clojure.string :as string])
   (:use [porter-stemmer.steps]
         [clojure.test]))
 
@@ -68,3 +69,9 @@
   (is (every? (stem-checker step-5b)
               {"controll" "control", "roll" "roll"})))
 
+
+(deftest test-stem
+  (let [words (-> "resources/voc.txt" slurp (string/split #"\n"))
+        expected-stems (-> "resources/output.txt" slurp (string/split #"\n"))
+        word-stem-map (zipmap words expected-stems)]
+    (is (every? (stem-checker stem-it) word-stem-map))))
