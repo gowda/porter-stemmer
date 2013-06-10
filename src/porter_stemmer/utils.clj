@@ -55,7 +55,7 @@
 
 (defn conditional-butlast [predicate? coll]
   (if (predicate? (last coll))
-    (rest coll)
+    (butlast coll)
     coll))
 
 (def without-first-true (partial conditional-rest true?))
