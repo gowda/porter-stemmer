@@ -34,15 +34,13 @@
     false
     (not (consonant? v))))
 
-(defn string->charvec [s]
-  (->> s
-       (map identity)
-       (concat [nil])
+(defn to-charvec [s]
+  (->> (concat [nil] s)
        (partition 2 1)))
 
 (defn cvc-map [s]
   (->> s
-       string->charvec
+       to-charvec
        (map consonant?)
        (reduce (fn [result v]
                  (if (= (last result) v)
@@ -89,13 +87,13 @@
   [s]
   (and (= (last s)
           (second-last s))
-       (consonant? (-> s string->charvec last))))
+       (consonant? (-> s to-charvec last))))
 
 (defn cvc-end?
   "True if string ends with <consonant><vowel><consonant>."
   [s]
-  (and (consonant? (-> s string->charvec third-last))
-       (vowel? (-> s string->charvec second-last))
-       (and (consonant? (-> s string->charvec last))
+  (and (consonant? (-> s to-charvec third-last))
+       (vowel? (-> s to-charvec second-last))
+       (and (consonant? (-> s to-charvec last))
             (not (#{\w \x \y} (last s))))))
 

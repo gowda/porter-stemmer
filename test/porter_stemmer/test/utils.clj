@@ -1,38 +1,38 @@
 (ns porter-stemmer.test.utils
   (:use [porter-stemmer.utils] [clojure.test]))
 
-(deftest test-string->charvec
+(deftest test-to-charvec
   (let [s "string"]
     (is (= (count s)
-           (count (string->charvec s)))))
+           (count (to-charvec s)))))
   (let [s ""]
     (is (= (count s)
-           (count (string->charvec s))))))
+           (count (to-charvec s))))))
 
 (deftest test-vowel?
   (let [s "string"]
-    (is (= (map vowel? (string->charvec s))
+    (is (= (map vowel? (to-charvec s))
            '(false false false true false false))))
   (let [s "sky"]
-    (is (= (map vowel? (string->charvec s))
+    (is (= (map vowel? (to-charvec s))
            '(false false true))))
   (let [s "toy"]
-    (is (= (map vowel? (string->charvec s))
+    (is (= (map vowel? (to-charvec s))
            '(false true false))))
   (let [s "yar"]
-    (is (= (map vowel? (string->charvec s))
+    (is (= (map vowel? (to-charvec s))
            '(false true false))))
   (is (false? (vowel? nil))))
 
 (deftest test-consonant?
   (let [s "string"]
-    (is (= (map consonant? (string->charvec s))
+    (is (= (map consonant? (to-charvec s))
            '(true true true false true true))))
   (let [s "sky"]
-    (is (= (map consonant? (string->charvec s))
+    (is (= (map consonant? (to-charvec s))
            '(true true false))))
   (let [s "toy"]
-    (is (= (map consonant? (string->charvec s))
+    (is (= (map consonant? (to-charvec s))
            '(true false true))))
   (is (false? (consonant? nil))))
 
